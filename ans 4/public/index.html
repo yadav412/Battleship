@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/game.css"/>
+</head>
+<body>
+
+    <div id="gameApp">
+        <p>Welcome to the Fort Defense Game, written by <strong>{{authorName}}</strong>.</p>
+
+        <!-- Manual buttons for control-->
+        <p>
+            <button type="button" v-on:click="newGame()">
+                New Game
+            </button>
+
+            <span v-if="game != null">
+                <button type="button" v-on:click="cheatShowAll()">
+                    Cheat: Show All
+                </button>
+            </span>
+        </p>
+
+        <!-- Game state -->
+        <p v-if="game != null">
+            Game {{game.gameNumber}}: Opponent Points: {{game.opponentPoints}}
+            &nbsp&nbsp&nbsp
+            {{game.numActiveOpponentForts}} Opponent Forts Remaining!</p>
+        <p v-else>
+            No game information available; try creating a new game?
+        </p>
+
+
+        <!-- Board -->
+        <div v-if="board != null">
+            <table>
+                <tr v-for="(row, rowIdx) in board.cellStates">
+                    <td v-for="(cellDescription, colIdx) in row">
+                        <div style="position: relative; left:0; top:0;" v-on:click="clickCell(rowIdx, colIdx)">
+
+                            <!-- Sprites: stack them on top of each other using relative position -->
+                            <img src="res/field.png"/>
+                            <img v-bind:src="'res/' + cellDescription + '.png'" class="stack"/>
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Last Opponent Points -->
+            <div v-if="game != null && game.lastOpponentPoints.length > 0">
+                <p>Latest opponent points</p>
+                <ul>
+                    <li v-for="(point, idx) in game.lastOpponentPoints">
+                        Opponent shot, earning {{point}}
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Won / loss -->
+            <h1 v-if="game.isGameWon">YOU WON! Congratulations!</h1>
+            <h1 v-if="game.isGameLost">YOU LOST! Try again?</h1>
+
+            <!-- Buttons for testing -->
+            <h2>Testing API Error Handling</h2>
+            <p>
+                <button type="button" v-on:click="getBadGame()">
+                    Test: Bad Game
+                </button>
+                <button type="button" v-on:click="getBadBoard()">
+                    Test: Bad Board
+                </button>
+                <button type="button" v-on:click="doBadCheat()">
+                    Test: Bad Cheat
+                </button>
+                <button type="button" v-on:click="doBadMove()">
+                    Test: Bad Move
+                </button>
+            </p>
+        </div>
+    </div>
+
+
+    <p>Icons created by <a href="https://www.everaldo.com/about">Everaldo Coelho</a>
+        as part of the <a href="https://www.iconfinder.com/iconsets/crystalproject">Crystal Project</a>;
+        used under LGPL.</p>
+    <!--Load controlling code development -->
+    <script src="scripts/game.js"></script>
+</body>
+</html>
